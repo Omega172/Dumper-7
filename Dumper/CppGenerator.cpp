@@ -1356,8 +1356,9 @@ void CppGenerator::GenerateDebugAssertions(StreamType& AssertionStream)
 
 void CppGenerator::GenerateSDKHeader(StreamType& SdkHpp)
 {
-	WriteFileHead(SdkHpp, nullptr, EFileType::SdkHpp, "Includes the entire SDK, include files directly for faster compilation!");
+	SdkHpp << "#define DUMPER_7\n\n"; // Just a define added so this gets easy seemless import into my framework ~ Omega172
 
+	WriteFileHead(SdkHpp, nullptr, EFileType::SdkHpp, "Includes the entire SDK, include files directly for faster compilation!");
 
 	auto ForEachElementCallback = [&SdkHpp](const PackageManagerIterationParams& OldParams, const PackageManagerIterationParams& NewParams, bool bIsStruct) -> void
 	{
