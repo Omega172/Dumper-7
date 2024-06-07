@@ -22,6 +22,22 @@ enum class EFortToastType : uint8
         EFortToastType_MAX             = 3,
 };
 
+const char* GetSDKGenerationPath()
+{
+	char szName[UNLEN + 1];
+	DWORD dwSize = UNLEN + 1;
+
+	GetUserNameA(szName, &dwSize);
+
+	std::string sPath = "C:/Users/";
+	sPath += szName;
+	sPath += "/Desktop/Dumped SDKs";
+
+	std::cout << sPath << std::endl;
+
+	return sPath.c_str();
+}
+
 DWORD MainThread(HMODULE Module)
 {
 	AllocConsole();
@@ -32,6 +48,7 @@ DWORD MainThread(HMODULE Module)
 	auto t_1 = std::chrono::high_resolution_clock::now();
 
 	std::cout << "Started Generation [Dumper-7]!\n";
+	Settings::Generator::SDKGenerationPath = GetSDKGenerationPath();
 
 	Generator::InitEngineCore();
 	Generator::InitInternal();
@@ -70,7 +87,7 @@ DWORD MainThread(HMODULE Module)
 
 	while (true)
 	{
-		if (GetAsyncKeyState(VK_F6) & 1)
+		if (GetAsyncKeyState(VK_END) & 1)
 		{
 			fclose(stdout);
 			if (Dummy) fclose(Dummy);

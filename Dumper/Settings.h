@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-
+#include <windows.h>
+#include <Lmcons.h>
 
 namespace Settings
 {
@@ -10,7 +11,7 @@ namespace Settings
 		inline std::string GameName = "";
 		inline std::string GameVersion = "";
 
-		inline constexpr const char* SDKGenerationPath = "C:/Dumper-7";
+		inline std::string SDKGenerationPath;
 	}
 
 	namespace CppGenerator
