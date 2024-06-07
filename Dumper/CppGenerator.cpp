@@ -1410,7 +1410,7 @@ void CppGenerator::WriteFileHead(StreamType& File, PackageInfoHandle Package, EF
 		File << "#include \"SDK/Basic.hpp\"\n";
 
 	if (Type == EFileType::DebugAssertions)
-		File << "#include \"SDK.hpp\"\n";
+		File << "#include \"SDK.h\"\n";
 
 	if (Type == EFileType::BasicHpp)
 	{
@@ -1504,8 +1504,8 @@ void CppGenerator::WriteFileEnd(StreamType& File, EFileType Type)
 
 void CppGenerator::Generate()
 {
-	// Generate SDK.hpp with sorted packages
-	StreamType SdkHpp(MainFolder / "SDK.hpp");
+	// Generate SDK.h with sorted packages
+	StreamType SdkHpp(MainFolder / "SDK.h");
 	GenerateSDKHeader(SdkHpp);
 
 	// Generate PropertyFixup.hpp

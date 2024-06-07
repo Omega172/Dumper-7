@@ -20,7 +20,7 @@ namespace Settings
 		constexpr const char* FilePrefix = "";
 
 		/* No seperate namespace for SDK -> SDKNamespaceName = nullptr */
-		constexpr const char* SDKNamespaceName = "SDK";
+		constexpr const char* SDKNamespaceName = "CG"; // Changed for easy import into my framework ~ Omega172
 
 		/* No seperate namespace for Params -> ParamNamespaceName = nullptr */
 		constexpr const char* ParamNamespaceName = "Params";
