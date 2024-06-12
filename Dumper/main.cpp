@@ -22,7 +22,7 @@ enum class EFortToastType : uint8
         EFortToastType_MAX             = 3,
 };
 
-const char* GetSDKGenerationPath()
+std::string GetSDKGenerationPath()
 {
 	char szName[UNLEN + 1];
 	DWORD dwSize = UNLEN + 1;
@@ -35,7 +35,7 @@ const char* GetSDKGenerationPath()
 
 	std::cout << sPath << std::endl;
 
-	return sPath.c_str();
+	return sPath;
 }
 
 DWORD MainThread(HMODULE Module)
