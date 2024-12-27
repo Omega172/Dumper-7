@@ -70,7 +70,7 @@ DWORD MainThread(HMODULE Module)
 
 	while (true)
 	{
-		if (GetAsyncKeyState(VK_F6) & 1)
+		if (GetAsyncKeyState(VK_END) & 1)
 		{
 			fclose(stdout);
 			if (Dummy) fclose(Dummy);
