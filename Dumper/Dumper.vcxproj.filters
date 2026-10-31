@@ -62,6 +62,9 @@
     <ClCompile Include="Engine\Private\Unreal\UnrealObjects.cpp">
       <Filter>Engine\Private\Unreal</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Private\Unreal\BlueprintLoader.cpp">
+      <Filter>Engine\Private\Unreal</Filter>
+    </ClCompile>
     <ClCompile Include="Engine\Private\Unreal\UnrealTypes.cpp">
       <Filter>Engine\Private\Unreal</Filter>
     </ClCompile>
@@ -242,6 +245,9 @@
       <Filter>Engine\Public\Unreal</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Public\Unreal\UnrealObjects.h">
+      <Filter>Engine\Public\Unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Public\Unreal\BlueprintLoader.h">
       <Filter>Engine\Public\Unreal</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Public\Unreal\UnrealTypes.h">

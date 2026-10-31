@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <filesystem>
 #include <string>
+#include <vector>
 
 #include "Unreal/UnrealObjects.h"
 #include "Unreal/ObjectArray.h"
@@ -106,6 +107,37 @@ void Settings::InitArrayDimSizeSettings()
 	std::cerr << std::format("\nDumper-7: bUseUint8ArrayDim = {}\n", Settings::Internal::bUseUint8ArrayDim) << std::endl;
 }
 
+static std::vector<std::string> SplitPathList(const char* List)
+{
+	std::vector<std::string> Paths;
+	std::string Current;
+
+	auto Flush = [&]()
+	{
+		const size_t First = Current.find_first_not_of(" \t");
+		const size_t Last = Current.find_last_not_of(" \t");
+
+		if (First != std::string::npos)
+			Paths.push_back(Current.substr(First, Last - First + 1));
+
+		Current.clear();
+	};
+
+	for (const char* It = List; *It; ++It)
+	{
+		if (*It == ',')
+		{
+			Flush();
+			continue;
+		}
+
+		Current += *It;
+	}
+
+	Flush();
+	return Paths;
+}
+
 void Settings::Config::Load()
 {
 	namespace fs = std::filesystem;
@@ -205,6 +237,24 @@ void Settings::Config::Load()
 
 	bShouldAutoUnload = GetPrivateProfileIntA("Settings", "ShouldAutoUnload", bShouldAutoUnload, ConfigPath) != 0;
 	Settings::Debug::bExecuteSDKTestScript = GetPrivateProfileIntA("Settings", "ExecuteSDKTestScript", Settings::Debug::bExecuteSDKTestScript, ConfigPath) != 0;
+
+	bLoadAllBlueprints = GetPrivateProfileIntA("Settings", "LoadAllBlueprints", bLoadAllBlueprints, ConfigPath) != 0;
+
+	if (bLoadAllBlueprints)
+	{
+		char PathList[2048] = {};
+		GetPrivateProfileStringA("Settings", "LoadBlueprintsPaths", "/Game", PathList, sizeof(PathList), ConfigPath);
+		LoadBlueprintsPaths = SplitPathList(PathList);
+
+		if (LoadBlueprintsPaths.empty())
+			LoadBlueprintsPaths = { "/Game" };
+
+		char ExcludeList[2048] = {};
+		GetPrivateProfileStringA("Settings", "LoadBlueprintsExcludePaths", "", ExcludeList, sizeof(ExcludeList), ConfigPath);
+		LoadBlueprintsExcludePaths = SplitPathList(ExcludeList);
+
+		std::cerr << "LoadAllBlueprints: on (" << LoadBlueprintsPaths.size() << " path(s), " << LoadBlueprintsExcludePaths.size() << " exclusion(s))\n";
+	}
 
 	char LogFilePath[256] = {};
 	GetPrivateProfileStringA("Settings", "LogFilePath", "", LogFilePath, sizeof(LogFilePath), ConfigPath);

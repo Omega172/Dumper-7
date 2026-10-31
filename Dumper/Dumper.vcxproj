@@ -307,6 +307,7 @@
     <ClCompile Include="Engine\Private\Unreal\ObjectArray.cpp" />
     <ClCompile Include="Engine\Private\OffsetFinder\Offsets.cpp" />
     <ClCompile Include="Engine\Private\Unreal\UnrealObjects.cpp" />
+    <ClCompile Include="Engine\Private\Unreal\BlueprintLoader.cpp" />
     <ClCompile Include="Engine\Private\Unreal\UnrealTypes.cpp" />
     <ClCompile Include="Generator\Private\Generators\IDAMappingGenerator.cpp" />
     <ClInclude Include="Generator\Public\SharedPredefinedMembers.h" />
@@ -365,6 +366,7 @@
     <ClInclude Include="Utils\Encoding\UnicodeNames.h" />
     <ClInclude Include="Engine\Public\Unreal\UnrealContainers.h" />
     <ClInclude Include="Engine\Public\Unreal\UnrealObjects.h" />
+    <ClInclude Include="Engine\Public\Unreal\BlueprintLoader.h" />
     <ClInclude Include="Engine\Public\Unreal\UnrealTypes.h" />
     <ClInclude Include="Utils\Encoding\UtfN.hpp" />
     <ClInclude Include="Utils\Utils.h" />

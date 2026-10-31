@@ -95,6 +95,18 @@ You can optionally dynamically change settings through a `Dumper-7.ini` file, in
   - If non-zero the dumper unloads itself after generation, instead of waiting for F6.
 - **ExecuteSDKTestScript:**
   - Overrides `Settings::Debug::bExecuteSDKTestScript`. If non-zero the SDK compilation test script is executed after generation.
+- **LoadAllBlueprints:**
+  - If non-zero, every Blueprint asset listed in the game's AssetRegistry is loaded before generation, so Blueprints that are not loaded yet (other maps, missions, menus) end up in the SDK too.
+  - Matches assets whose class name ends in `Blueprint` or `BlueprintGeneratedClass`, plus `UserDefinedStruct` and `UserDefinedEnum`. For Blueprint assets the generated `_C` class is loaded.
+  - Loading runs on the game thread: Dumper-7 temporarily hooks `ProcessEvent` and runs the loads inside the next actor `ReceiveTick` call (or any game thread `ProcessEvent` call after 10 seconds). If none arrives within 60 seconds the dump continues without loading.
+  - The game thread stays blocked until generation finishes, so garbage collection cannot unload anything mid-dump. The game freezes for the whole dump. This is expected.
+  - Each asset is logged as `[i/N] /Game/Path/BP_Name.BP_Name_C` before it loads, so if the game crashes the last line names the culprit. Add it to `LoadBlueprintsExcludePaths` and retry.
+  - Loading everything pulls in the assets those Blueprints reference, which can take minutes and a lot of memory. Narrow `LoadBlueprintsPaths` if it is too much.
+  - Requires the game to ship its AssetRegistry (`AssetRegistry.bin`). Most cooked games do. If the registry is empty, nothing is loaded.
+- **LoadBlueprintsPaths:**
+  - Comma separated package paths searched recursively when `LoadAllBlueprints` is set. Default `/Game`.
+- **LoadBlueprintsExcludePaths:**
+  - Comma separated package path prefixes that are never loaded, e.g. `/Game/Maps,/Game/Developers`.
 
 
 ### Example:
@@ -106,6 +118,15 @@ DumpKey=0x77
 SDKGenerationPath=./
 ```
 - These settings would generate the SDK in the same folder as the game and would start after 30 seconds or upon pressing F8.
+
+```ini
+[Settings]
+LoadAllBlueprints=1
+LoadBlueprintsPaths=/Game
+LoadBlueprintsExcludePaths=/Game/Developers
+LogFilePath=C:/Dumper-7/Dumper-7.log
+```
+- These settings load every Blueprint under `/Game` except `/Game/Developers` before dumping, and log progress to a file.
 
 ## Issues
 

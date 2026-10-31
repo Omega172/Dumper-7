@@ -9,6 +9,7 @@
 #include "Generators/DumpspaceGenerator.h"
 
 #include "Generators/Generator.h"
+#include "Unreal/BlueprintLoader.h"
 
 enum class EFortToastType : uint8
 {
@@ -21,10 +22,11 @@ enum class EFortToastType : uint8
 
 DWORD MainThread(HMODULE Module)
 {
-	AllocConsole();
-	FILE* Dummy;
-	freopen_s(&Dummy, "CONIN$", "r", stdin);
-	freopen_s(&Dummy, "CONOUT$", "w", stderr);
+	const bool bCreatedConsole = AllocConsole() != FALSE;
+	FILE* ConsoleIn = nullptr;
+	FILE* ConsoleErr = nullptr;
+	freopen_s(&ConsoleIn, "CONIN$", "r", stdin);
+	freopen_s(&ConsoleErr, "CONOUT$", "w", stderr);
 	std::cerr.clear(); // clear internal error flags on cerr after redirect
 	std::cerr << std::boolalpha << std::hex;
 
@@ -37,6 +39,7 @@ DWORD MainThread(HMODULE Module)
 	auto DumpStartTime = std::chrono::high_resolution_clock::now();
 
 	Generator::InitEngineCore();
+	BlueprintLoader::LoadAll();
 	Generator::InitInternal();
 
 	if (Settings::Generator::GameName.empty() && Settings::Generator::GameVersion.empty())
@@ -65,6 +68,8 @@ DWORD MainThread(HMODULE Module)
 	Generator::Generate<IDAMappingGenerator>();
 	Generator::Generate<DumpspaceGenerator>();
 
+	BlueprintLoader::Release();
+
 	auto DumpFinishTime = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double, std::milli> DumpTime = DumpFinishTime - DumpStartTime;
@@ -83,12 +88,16 @@ DWORD MainThread(HMODULE Module)
 	{
 		if (GetAsyncKeyState(VK_F6) & 1 || Settings::Config::bShouldAutoUnload)
 		{
+			BlueprintLoader::WaitForIdle();
+
+			const HWND ConsoleWindow = GetConsoleWindow();
+
 			fclose(stderr);
-			if (Dummy) 
-			{
-				fclose(Dummy);
-			}
+			fclose(stdin);
 			FreeConsole();
+
+			if (bCreatedConsole && ConsoleWindow)
+				PostMessageA(ConsoleWindow, WM_CLOSE, 0, 0);
 
 			FreeLibraryAndExitThread(Module, 0);
 		}

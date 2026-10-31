@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "Unreal/Enums.h"
 
@@ -24,7 +25,11 @@ namespace Settings
 		inline std::string SDKNamespaceName = "SDK";
 
 		/* Whether to unload the dumper after generation instead of waiting for F6. */
-		inline bool bShouldAutoUnload = false;
+		inline bool bShouldAutoUnload = true;
+
+		inline bool bLoadAllBlueprints = true;
+		inline std::vector<std::string> LoadBlueprintsPaths = { "/Game" };
+		inline std::vector<std::string> LoadBlueprintsExcludePaths;
 
 		void Load();
 		void DelayDumperStart();
